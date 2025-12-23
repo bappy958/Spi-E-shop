@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
 import { X, Laptop, Building2, CircuitBoard, Snowflake, Package, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 
@@ -7,49 +7,49 @@ const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedDept, setExpandedDept] = useState(null);
-  
+
   const departments = [
-    { 
-      name: 'CST', 
-      fullName: 'Computer Science & Technology', 
-      icon: Laptop, 
-      count: 156, 
+    {
+      name: 'CST',
+      fullName: 'Computer Science & Technology',
+      icon: Laptop,
+      count: 156,
       description: 'Computer components, sensors, microcontrollers',
       route: 'CST',
       color: 'from-navy-500 to-navy-600'
     },
-    { 
-      name: 'Civil', 
-      fullName: 'Civil Technology', 
-      icon: Building2, 
-      count: 98, 
+    {
+      name: 'Civil',
+      fullName: 'Civil Technology',
+      icon: Building2,
+      count: 98,
       description: 'Construction materials, measuring instruments',
       route: 'Civil',
       color: 'from-navy-600 to-navy-700'
     },
-    { 
-      name: 'Electronics', 
-      fullName: 'Electronics Technology', 
-      icon: CircuitBoard, 
-      count: 134, 
+    {
+      name: 'Electronics',
+      fullName: 'Electronics Technology',
+      icon: CircuitBoard,
+      count: 134,
       description: 'Electronic components, communication devices',
       route: 'Electronics',
       color: 'from-gold-500 to-gold-600'
     },
-    { 
-      name: 'RAC', 
-      fullName: 'Refrigeration and Air Conditioning', 
-      icon: Snowflake, 
-      count: 87, 
+    {
+      name: 'RAC',
+      fullName: 'Refrigeration and Air Conditioning',
+      icon: Snowflake,
+      count: 87,
       description: 'HVAC equipment, refrigeration components',
       route: 'RAC',
       color: 'from-navy-500 to-gold-500'
     },
-    { 
-      name: 'General', 
-      fullName: 'General Supplies', 
-      icon: Package, 
-      count: 200, 
+    {
+      name: 'General',
+      fullName: 'General Supplies',
+      icon: Package,
+      count: 200,
       description: 'General academic and office supplies',
       route: 'General',
       color: 'from-academic-500 to-academic-600'
@@ -93,7 +93,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           />
         )}
       </AnimatePresence>
-      
+
       {/* Sidebar - Compact Design */}
       <motion.div
         variants={sidebarVariants}
@@ -167,12 +167,12 @@ const Sidebar = ({ isOpen, onClose }) => {
                         className={`
                           w-full flex items-center p-2 rounded-lg
                           transition-all duration-200
-                          ${isCollapsed 
-                            ? 'justify-center' 
+                          ${isCollapsed
+                            ? 'justify-center'
                             : 'justify-between'
                           }
-                          ${isActive 
-                            ? 'bg-burgundy-50 dark:bg-burgundy-900/20 border-l-4 border-burgundy-600 shadow-sm' 
+                          ${isActive
+                            ? 'bg-burgundy-50 dark:bg-burgundy-900/20 border-l-4 border-burgundy-600 shadow-sm'
                             : 'hover:bg-academic-50 dark:hover:bg-academic-700'
                           }
                         `}
@@ -181,8 +181,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                         <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'space-x-2'} flex-1 min-w-0`}>
                           <div className={`
                             p-1.5 rounded-md transition-colors flex-shrink-0
-                            ${isActive 
-                              ? `bg-gradient-to-br ${dept.color} text-white` 
+                            ${isActive
+                              ? `bg-gradient-to-br ${dept.color} text-white`
                               : 'bg-academic-100 dark:bg-academic-700 text-burgundy-600 dark:text-burgundy-400'
                             }
                           `}>
@@ -193,8 +193,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                               <div className="flex items-center justify-between">
                                 <span className={`
                                   text-sm font-semibold transition-colors truncate
-                                  ${isActive 
-                                    ? 'text-burgundy-600 dark:text-burgundy-400' 
+                                  ${isActive
+                                    ? 'text-burgundy-600 dark:text-burgundy-400'
                                     : 'text-academic-900 dark:text-academic-50'
                                   }
                                 `}>
@@ -202,8 +202,8 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 </span>
                                 <span className={`
                                   text-xs font-bold px-1.5 py-0.5 rounded
-                                  ${isActive 
-                                    ? 'bg-burgundy-600 text-white' 
+                                  ${isActive
+                                    ? 'bg-burgundy-600 text-white'
                                     : 'bg-academic-200 dark:bg-academic-700 text-academic-700 dark:text-academic-300'
                                   }
                                 `}>

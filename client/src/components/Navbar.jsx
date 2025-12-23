@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Search, ShoppingCart, User, Menu, X, Sun, Moon, LayoutGrid, Bot } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -23,7 +23,7 @@ const Navbar = ({ onSidebarToggle, isSidebarOpen, onUserClick }) => {
 
     try {
       const result = await aiSearch(searchQuery);
-      
+
       if (result.success && result.department) {
         setTimeout(() => {
           navigate(`/department/${result.department}`);
@@ -56,28 +56,28 @@ const Navbar = ({ onSidebarToggle, isSidebarOpen, onUserClick }) => {
             >
               <LayoutGrid className="w-6 h-6" />
             </button>
-            
-                    <Link to="/" className="flex items-center space-x-4 group">
-                      <motion.div
-                        className="relative"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ type: 'spring', stiffness: 300 }}
-                      >
-                        <Logo size="default" />
-                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-cream-600 rounded-full border-2 border-white dark:border-academic-900"></div>
-                      </motion.div>
-                      
-                      <div className="hidden sm:block">
-                        <div className="flex flex-col">
-                          <h1 className="text-lg font-display font-bold text-burgundy-600 dark:text-burgundy-400 group-hover:text-burgundy-700 transition-colors">
-                            SATKHIRA POLYTECHNIC INSTITUTE
-                          </h1>
-                          <p className="text-xs text-academic-600 dark:text-academic-400 font-medium">
-                            Departmental Store
-                          </p>
-                        </div>
-                      </div>
-                    </Link>
+
+            <Link to="/" className="flex items-center space-x-4 group">
+              <motion.div
+                className="relative"
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: 'spring', stiffness: 300 }}
+              >
+                <Logo size="default" />
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-cream-600 rounded-full border-2 border-white dark:border-academic-900"></div>
+              </motion.div>
+
+              <div className="hidden sm:block">
+                <div className="flex flex-col">
+                  <h1 className="text-lg font-display font-bold text-burgundy-600 dark:text-burgundy-400 group-hover:text-burgundy-700 transition-colors">
+                    SATKHIRA POLYTECHNIC INSTITUTE
+                  </h1>
+                  <p className="text-xs text-academic-600 dark:text-academic-400 font-medium">
+                    Departmental Store
+                  </p>
+                </div>
+              </div>
+            </Link>
           </div>
 
           {/* Center: Search Bar - Desktop */}
@@ -118,15 +118,15 @@ const Navbar = ({ onSidebarToggle, isSidebarOpen, onUserClick }) => {
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            
+
             <button className="relative p-2 text-academic-700 dark:text-academic-300 hover:text-burgundy-600 transition-colors rounded-md hover:bg-academic-100 dark:hover:bg-academic-800">
               <ShoppingCart className="w-6 h-6" />
               <span className="absolute top-0 right-0 bg-burgundy-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
                 0
               </span>
             </button>
-            
-            <button 
+
+            <button
               onClick={onUserClick}
               className="p-2 text-academic-700 dark:text-academic-300 hover:text-burgundy-600 transition-colors rounded-md hover:bg-academic-100 dark:hover:bg-academic-800"
             >

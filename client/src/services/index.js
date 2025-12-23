@@ -31,7 +31,9 @@ export const orderService = USE_MOCK ? mockOrders : apiOrders;
 import * as apiOrders from './api/orders.api';
 import * as apiProducts from './api/products.api';
 import * as apiCustomers from './api/customers.api';
+import * as apiChat from './api/chat.api';
 
 export const orderService = USE_MOCK ? mockOrders : apiOrders;
 export const productService = USE_MOCK ? mockProducts : apiProducts;
 export const customerService = USE_MOCK ? mockCustomers : apiCustomers;
+export const chatService = apiChat; // Chat always uses API (or we could mock it too if needed, but skipping for now)

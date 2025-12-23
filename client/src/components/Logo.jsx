@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import React from 'react';
 import { School } from 'lucide-react';
 
 const Logo = ({ className = '', size = 'default', showText = false }) => {
