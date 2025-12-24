@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Bell, Search, User, Sun, Moon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
@@ -22,7 +22,7 @@ const DashboardNavbar = ({ onSidebarToggle }) => {
             >
               <Menu className="w-6 h-6" />
             </button>
-            
+
             <div className="hidden md:flex items-center space-x-2">
               <Search className="w-5 h-5 text-academic-400" />
               <input
@@ -41,12 +41,12 @@ const DashboardNavbar = ({ onSidebarToggle }) => {
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
-            
+
             <button className="relative p-2 text-academic-300 hover:text-white transition-colors rounded-md hover:bg-academic-800">
               <Bell className="w-5 h-5" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-            
+
             <Link to="/">
               <motion.button
                 whileHover={{ scale: 1.05 }}

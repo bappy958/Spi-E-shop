@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { X, Laptop, Building2, CircuitBoard, Snowflake, Package, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+
 
 const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
