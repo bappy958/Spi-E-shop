@@ -71,6 +71,9 @@ function App() {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/department/:deptName" element={<DepartmentPage />} />
+
+              {/* Catch-all: redirect unknown routes to home */}
+              <Route path="*" element={<Home />} />
             </Routes>
           </main>
         )}
