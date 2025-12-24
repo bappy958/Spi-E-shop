@@ -23,9 +23,14 @@ class ErrorBoundary extends React.Component {
             <p className="text-academic-700 dark:text-academic-300 mb-4">
               {this.state.error?.toString() || 'An unexpected error occurred'}
             </p>
+            {process.env.NODE_ENV !== 'production' && this.state.error?.stack && (
+              <pre className="text-xs bg-burgundy-50 dark:bg-burgundy-900/20 p-3 rounded overflow-auto max-h-48 mb-4">
+                {this.state.error.stack}
+              </pre>
+            )}
             <button
               onClick={() => window.location.reload()}
-              className="btn-academic"
+              className="w-full bg-burgundy-600 hover:bg-burgundy-700 text-white font-semibold py-2 px-4 rounded transition-colors"
             >
               Reload Page
             </button>
