@@ -1,8 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from './Logo';
-import { 
-  LayoutDashboard, 
+import {
+  LayoutDashboard,
   FileText,
   Wallet,
   Bell,
@@ -22,7 +22,12 @@ import {
   Settings,
   HelpCircle,
   Moon,
-  Sun
+  Sun,
+  Code,
+  Mail,
+  Github,
+  Briefcase,
+  Sparkles
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
@@ -117,8 +122,8 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
   ];
 
   const toggleSubMenu = (itemId) => {
-    setExpandedItems(prev => 
-      prev.includes(itemId) 
+    setExpandedItems(prev =>
+      prev.includes(itemId)
         ? prev.filter(id => id !== itemId)
         : [...prev, itemId]
     );
@@ -159,12 +164,12 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
   };
 
   const itemVariants = {
-    hidden: { 
-      opacity: 0, 
+    hidden: {
+      opacity: 0,
       x: -20,
     },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
       transition: {
         type: 'spring',
@@ -325,7 +330,7 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
               </p>
             </motion.div>
           )}
-          
+
           <motion.ul
             variants={containerVariants}
             initial="hidden"
@@ -366,8 +371,8 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
                         className={`
                           relative flex items-center justify-between p-3 rounded-lg
                           transition-all duration-200 cursor-pointer
-                          ${active 
-                            ? 'bg-purple-600/20 text-white' 
+                          ${active
+                            ? 'bg-purple-600/20 text-white'
                             : 'text-academic-300 hover:bg-academic-800'
                           }
                         `}
@@ -375,14 +380,14 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
                         <div className="flex items-center space-x-3 flex-1 min-w-0">
                           <div className={`
                             p-2 rounded-lg transition-colors flex-shrink-0
-                            ${active 
-                              ? 'bg-purple-600 text-white' 
+                            ${active
+                              ? 'bg-purple-600 text-white'
                               : 'bg-academic-800 text-purple-400'
                             }
                           `}>
                             <Icon className="w-4 h-4" />
                           </div>
-                          
+
                           {!showCollapsed && (
                             <span className={`font-semibold text-sm truncate ${active ? 'text-white' : 'text-academic-300'}`}>
                               {item.label}
@@ -395,15 +400,15 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
                             {item.badge && (
                               <span className={`
                                 px-2 py-0.5 text-xs font-bold rounded-full
-                                ${active 
-                                  ? 'bg-purple-600 text-white' 
+                                ${active
+                                  ? 'bg-purple-600 text-white'
                                   : 'bg-purple-600/20 text-purple-400'
                                 }
                               `}>
                                 {item.badge}
                               </span>
                             )}
-                            
+
                             {hasSubItems && (
                               <motion.div
                                 animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -629,12 +634,11 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
                       )}
                       <span className="text-sm font-medium text-white">Dark-Mode</span>
                     </div>
-                    <div className={`w-10 h-6 rounded-full relative transition-colors ${
-                      theme === 'dark' ? 'bg-purple-600' : 'bg-academic-600'
-                    }`}>
+                    <div className={`w-10 h-6 rounded-full relative transition-colors ${theme === 'dark' ? 'bg-purple-600' : 'bg-academic-600'
+                      }`}>
                       <motion.div
                         className="w-4 h-4 bg-white rounded-full absolute top-1 transition-all"
-                        animate={{ 
+                        animate={{
                           x: theme === 'dark' ? 16 : 2,
                         }}
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
@@ -687,6 +691,127 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
                   <Plus className="w-5 h-5" />
                 </motion.button>
               )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Developer Info Section */}
+        <AnimatePresence>
+          {shouldShow && !showCollapsed && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ delay: 0.4 }}
+              className="p-4 border-t border-academic-800 bg-gradient-to-br from-academic-900 to-academic-800"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="space-y-3"
+              >
+                {/* Header */}
+                <div className="flex items-center space-x-2 mb-3">
+                  <div className="p-2 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-purple-400 uppercase tracking-wider">
+                      Developer Team
+                    </p>
+                    <p className="text-sm font-bold text-white">
+                      Error Developer
+                    </p>
+                  </div>
+                </div>
+
+                {/* Developer Info */}
+                <div className="bg-academic-900/50 rounded-lg p-3 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Briefcase className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                    <div>
+                      <p className="text-xs text-academic-400">Developer</p>
+                      <p className="text-sm font-semibold text-white">BAPPY AHMMED</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start space-x-2">
+                    <Mail className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />
+                    <a
+                      href="mailto:itznobita958@gmail.com"
+                      className="text-xs text-blue-400 hover:text-blue-300 transition-colors break-all"
+                    >
+                      itznobita958@gmail.com
+                    </a>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Github className="w-4 h-4 text-purple-400 flex-shrink-0" />
+                    <a
+                      href="https://github.com/bappy958"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
+                    >
+                      github.com/bappy958
+                    </a>
+                  </div>
+                </div>
+
+                {/* Bio */}
+                <div className="bg-academic-900/50 rounded-lg p-3">
+                  <p className="text-xs text-academic-300 leading-relaxed">
+                    <span className="font-semibold text-purple-400">About:</span> College project for learning full-stack e-commerce development
+                  </p>
+                </div>
+
+                {/* Technologies */}
+                <div className="bg-academic-900/50 rounded-lg p-3">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Code className="w-4 h-4 text-purple-400" />
+                    <p className="text-xs font-bold text-white uppercase tracking-wider">
+                      Tech Stack
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <div>
+                      <p className="text-xs font-semibold text-purple-400 mb-1">Frontend</p>
+                      <div className="flex flex-wrap gap-1">
+                        {['React', 'Vite', 'Framer Motion', 'TailwindCSS', 'Firebase'].map(tech => (
+                          <span
+                            key={tech}
+                            className="px-2 py-0.5 text-xs bg-purple-600/20 text-purple-300 rounded-full border border-purple-600/30"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-xs font-semibold text-blue-400 mb-1">Backend</p>
+                      <div className="flex flex-wrap gap-1">
+                        {['Node.js', 'Express', 'MongoDB', 'JWT', 'Redis'].map(tech => (
+                          <span
+                            key={tech}
+                            className="px-2 py-0.5 text-xs bg-blue-600/20 text-blue-300 rounded-full border border-blue-600/30"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="text-center pt-2">
+                  <p className="text-xs text-academic-500">
+                    © 2025 Error Developer • v1.0.0
+                  </p>
+                </div>
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
