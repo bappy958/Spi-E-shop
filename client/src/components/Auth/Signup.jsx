@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, UserPlus, Eye, EyeOff, User, GraduationCap } from 'lucide-react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebase';
+import { createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
+import { auth, isFirebaseConfigured } from '../../services/firebase';
 
 const Signup = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [name, setName] = useState('');
@@ -13,10 +13,16 @@ const Signup = ({ isOpen, onClose, onSwitchToLogin }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!isFirebaseConfigured || !auth) {
+      setError('Firebase is not configured. Add VITE_FIREBASE_* values in client/.env and restart the dev server.');
+      return;
+    }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match');
@@ -31,8 +37,21 @@ const Signup = ({ isOpen, onClose, onSwitchToLogin }) => {
     setLoading(true);
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      onClose();
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Send verification email
+      await sendEmailVerification(userCredential.user);
+
+      setSuccess(true);
+
+      // Auto sign out after signup so they must sign in after verification
+      await signOut(auth);
+
+      // Don't close immediately so user can see the success message
+      setTimeout(() => {
+        onClose();
+        setSuccess(false);
+      }, 5000);
     } catch (err) {
       setError(err.message || 'Failed to create account. Please try again.');
     } finally {
@@ -108,6 +127,17 @@ const Signup = ({ isOpen, onClose, onSwitchToLogin }) => {
                     >
                       <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
                       <span>{error}</span>
+                    </motion.div>
+                  )}
+
+                  {success && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      className="p-4 bg-green-50 dark:bg-green-900/20 border-2 border-green-200 dark:border-green-800/50 rounded-xl text-green-600 dark:text-green-400 text-sm flex items-center space-x-2"
+                    >
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+                      <span>Verification email sent! Please check your inbox.</span>
                     </motion.div>
                   )}
 

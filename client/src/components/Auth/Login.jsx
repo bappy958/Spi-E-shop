@@ -1,8 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, LogIn, Eye, EyeOff, GraduationCap } from 'lucide-react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../config/firebase';
+import { signInWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
+import { auth, isFirebaseConfigured } from '../../services/firebase';
 
 const Login = ({ isOpen, onClose, onSwitchToSignup }) => {
   const [email, setEmail] = useState('');
@@ -10,17 +11,74 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resendStatus, setResendStatus] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    if (!isFirebaseConfigured || !auth) {
+      setError('Firebase is not configured. Add VITE_FIREBASE_* values in client/.env and restart the dev server.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+      // We no longer sign out unverified users here.
+      // Instead, we let them in but they will be restricted by ProtectedRoute or Dashboard checks.
+      if (!userCredential.user.emailVerified) {
+        // We can show a non-blocking warning or redirect them to a "Verify Your Email" page.
+        // For now, let's just let them proceed to dashboard which will handle the restricted view.
+        console.log('User logged in but email not verified');
+      }
+
       onClose();
+      // Redirect to dashboard after successful login
+      navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Failed to login. Please check your credentials.');
+      console.error('Login error:', err);
+      let errorMessage = 'Failed to login. Please check your credentials.';
+
+      if (err.code === 'auth/invalid-credential') {
+        errorMessage = 'Invalid email or password. Please try again.';
+      } else if (err.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email.';
+      } else if (err.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password.';
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many failed login attempts. Please try again later.';
+      }
+
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!email) {
+      setError('Please enter your email address first.');
+      return;
+    }
+
+    setLoading(true);
+    setResendStatus('Sending...');
+
+    try {
+      // Re-sign in briefly to get user object or use current if exists
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(userCredential.user);
+      await signOut(auth);
+      setResendStatus('Verification email sent! Please check your inbox.');
+      setError('');
+    } catch (err) {
+      console.error('Resend error:', err);
+      setError('Failed to send verification email. ' + err.message);
+      setResendStatus('');
     } finally {
       setLoading(false);
     }
@@ -90,10 +148,33 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) => {
                     <motion.div
                       initial={{ opacity: 0, y: -10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      className="p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800/50 rounded-xl text-red-600 dark:text-red-400 text-sm flex items-center space-x-2"
+                      className="p-4 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800/50 rounded-xl text-red-600 dark:text-red-400 text-sm"
                     >
-                      <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                      <span>{error}</span>
+                      <div className="flex items-center space-x-2 mb-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                        <span className="font-semibold">Error</span>
+                      </div>
+                      <p>{error}</p>
+                      {error.includes('verify your email') && (
+                        <button
+                          type="button"
+                          onClick={handleResendVerification}
+                          className="mt-2 text-navy-600 dark:text-navy-400 hover:underline font-semibold block"
+                        >
+                          Resend verification email
+                        </button>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {resendStatus && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      className="p-4 bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-200 dark:border-blue-800/50 rounded-xl text-blue-600 dark:text-blue-400 text-sm flex items-center space-x-2"
+                    >
+                      <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                      <span>{resendStatus}</span>
                     </motion.div>
                   )}
 

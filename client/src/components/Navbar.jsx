@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, ShoppingCart, User, Menu, X, Sun, Moon, LayoutGrid, Bot } from 'lucide-react';
+import { Search, ShoppingCart, User, Menu, X, Sun, Moon, LayoutGrid, Bot, LayoutDashboard } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
-import { motion } from 'framer-motion';
+import { useAuth } from '../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 import { aiSearch } from '../services/aiService';
 import Logo from './Logo';
 
@@ -12,6 +13,7 @@ const Navbar = ({ onSidebarToggle, isSidebarOpen, onUserClick }) => {
   const [isAISearchActive, setIsAISearchActive] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { currentUser } = useAuth();
   const navigate = useNavigate();
 
   const handleSearch = async (e) => {
@@ -126,12 +128,34 @@ const Navbar = ({ onSidebarToggle, isSidebarOpen, onUserClick }) => {
               </span>
             </button>
 
-            <button
-              onClick={onUserClick}
-              className="p-2 text-academic-700 dark:text-academic-300 hover:text-burgundy-600 transition-colors rounded-md hover:bg-academic-100 dark:hover:bg-academic-800"
-            >
-              <User className="w-6 h-6" />
-            </button>
+            {currentUser ? (
+              <Link
+                to="/dashboard"
+                className="flex items-center space-x-2 p-1.5 hover:bg-academic-100 dark:hover:bg-academic-800 rounded-lg transition-all group"
+              >
+                <div className="relative">
+                  <img
+                    src={currentUser.photoURL || `https://ui-avatars.com/api/?name=${currentUser.email}&background=random`}
+                    alt="User"
+                    className="w-8 h-8 rounded-lg object-cover ring-2 ring-burgundy-500/30 group-hover:ring-burgundy-500 transition-all"
+                  />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white dark:border-academic-900"></div>
+                </div>
+                <div className="hidden lg:block text-left mr-2">
+                  <p className="text-xs font-bold text-academic-900 dark:text-academic-50 truncate max-w-[100px]">
+                    {currentUser.displayName || currentUser.email.split('@')[0]}
+                  </p>
+                  <p className="text-[10px] text-academic-500 font-medium">Dashboard</p>
+                </div>
+              </Link>
+            ) : (
+              <button
+                onClick={onUserClick}
+                className="p-2 text-academic-700 dark:text-academic-300 hover:text-burgundy-600 transition-colors rounded-md hover:bg-academic-100 dark:hover:bg-academic-800"
+              >
+                <User className="w-6 h-6" />
+              </button>
+            )}
 
             {/* Mobile Menu Button */}
             <button

@@ -27,25 +27,29 @@ import {
   Mail,
   Github,
   Briefcase,
-  Sparkles
+  Sparkles,
+  ShoppingBag,
+  MessageSquare
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
+import { LogOut } from 'lucide-react';
 
 const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { currentUser, logout, isAdmin } = useAuth();
   const [expandedItems, setExpandedItems] = useState(['dashboard']);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
 
-  const menuItems = [
+  const adminItems = [
     {
       id: 'dashboard',
       label: 'Dashboard',
       icon: LayoutDashboard,
       path: '/dashboard',
-      badge: null,
       subItems: [
         { label: 'Activity', path: '/dashboard/activity', icon: Activity },
         { label: 'Traffic', path: '/dashboard/traffic', icon: TrendingUp },
@@ -53,18 +57,10 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
       ]
     },
     {
-      id: 'orders',
-      label: 'Orders',
-      icon: ShoppingCart,
-      path: '/dashboard/orders',
-      badge: null,
-    },
-    {
       id: 'products',
       label: 'Products',
       icon: Package,
       path: '/dashboard/products',
-      badge: null,
       subItems: [
         { label: 'All Products', path: '/dashboard/products', icon: Package },
         { label: 'Add Product', path: '/dashboard/products/add', icon: Plus },
@@ -72,48 +68,77 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
       ]
     },
     {
+      id: 'orders', // Admin orders
+      label: 'Manage Orders',
+      icon: ShoppingBag,
+      path: '/dashboard/orders',
+    },
+    {
       id: 'transaction',
       label: 'Transaction',
       icon: Wallet,
       path: '/dashboard/transaction',
-      badge: null,
     },
     {
       id: 'stores',
       label: 'Stores',
       icon: Store,
       path: '/dashboard/stores',
-      badge: null,
     },
     {
       id: 'reports',
       label: 'Reports',
       icon: BarChart3,
       path: '/dashboard/reports',
-      badge: null,
     },
     {
       id: 'customers',
       label: 'Customers',
       icon: Users,
       path: '/dashboard/customers',
-      badge: null,
     },
     {
       id: 'role-management',
       label: 'Role Management',
       icon: Shield,
       path: '/dashboard/role-management',
-      badge: null,
     },
     {
       id: 'log-activity',
       label: 'Log Activity',
       icon: FileText,
       path: '/dashboard/log-activity',
-      badge: null,
     },
   ];
+
+  const userItems = [
+    {
+      id: 'profile',
+      label: 'My Profile',
+      icon: Users,
+      path: '/dashboard/profile',
+    },
+    {
+      id: 'my-cart',
+      label: 'My Cart',
+      icon: ShoppingCart,
+      path: '/dashboard/my-cart',
+    },
+    {
+      id: 'my-orders',
+      label: 'My Orders',
+      icon: ShoppingBag,
+      path: '/dashboard/my-orders',
+    },
+    {
+      id: 'suggestion',
+      label: 'Suggestion List',
+      icon: MessageSquare,
+      path: '/dashboard/suggestion-list',
+    },
+  ];
+
+  const filteredMenuItems = isAdmin ? adminItems : userItems;
 
   const messages = [
     { name: 'Erik Gunsel', avatar: 'https://i.pravatar.cc/150?img=1' },
@@ -280,22 +305,24 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
                   animate={{ opacity: 1, x: 0 }}
                   className="flex items-center space-x-3"
                 >
-                  <div className="relative">
-                    <img
-                      src="https://i.pravatar.cc/150?img=12"
-                      alt="User"
-                      className="w-12 h-12 rounded-full object-cover border-2 border-purple-500"
-                    />
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-academic-900"></div>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold text-academic-400 truncate">
-                      PRODUCT DESIGNER
-                    </p>
-                    <p className="text-sm font-bold text-white truncate">
-                      Andrew Smith
-                    </p>
-                  </div>
+                  <Link to="/dashboard/profile" className="flex items-center space-x-3 group/profile">
+                    <div className="relative">
+                      <img
+                        src={currentUser?.photoURL || `https://ui-avatars.com/api/?name=${currentUser?.email}&background=random`}
+                        alt="User"
+                        className="w-12 h-12 rounded-full object-cover border-2 border-purple-500 group-hover/profile:border-white transition-all"
+                      />
+                      <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-academic-900"></div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-semibold text-academic-400 truncate">
+                        {currentUser?.emailVerified ? 'VERIFIED STUDENT' : 'UNVERIFIED'}
+                      </p>
+                      <p className="text-sm font-bold text-white truncate group-hover/profile:text-purple-400 transition-colors">
+                        {currentUser?.displayName || currentUser?.email.split('@')[0]}
+                      </p>
+                    </div>
+                  </Link>
                 </motion.div>
               ) : (
                 <motion.div
@@ -337,7 +364,7 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
             animate="visible"
             className="space-y-1"
           >
-            {menuItems.map((item, index) => {
+            {filteredMenuItems.map((item, index) => {
               const Icon = item.icon;
               const active = isActive(item.path);
               const hasSubItems = item.subItems && item.subItems.length > 0;
@@ -644,6 +671,14 @@ const DashboardSidebar = ({ isOpen, onClose, isMobile = false }) => {
                         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                       />
                     </div>
+                  </motion.div>
+                  <motion.div
+                    whileHover={{ x: 3 }}
+                    onClick={logout}
+                    className="flex items-center space-x-3 p-2.5 rounded-lg hover:bg-red-500/10 cursor-pointer transition-colors text-red-400 hover:text-red-500"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    <span className="text-sm font-medium">Logout</span>
                   </motion.div>
                 </div>
               </div>

@@ -8,7 +8,16 @@ import {
   TrendingUp
 } from 'lucide-react';
 
+import { useAuth } from '../../context/AuthContext';
+import UserDashboardOverview from './UserDashboardOverview';
+
 const DashboardOverview = () => {
+  const { isAdmin } = useAuth();
+
+  if (!isAdmin) {
+    return <UserDashboardOverview />;
+  }
+
   const [selectedPeriod, setSelectedPeriod] = useState('1 Day');
 
   // Bar chart data for Total Sale
@@ -229,8 +238,8 @@ const DashboardOverview = () => {
                     animate={{ height: `${(data.value / maxSales) * 100}%` }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
                     className={`w-full rounded-t-lg relative overflow-hidden ${index === 4
-                        ? 'bg-gradient-to-t from-blue-600 to-purple-600'
-                        : 'bg-gradient-to-t from-blue-500/50 to-purple-500/50'
+                      ? 'bg-gradient-to-t from-blue-600 to-purple-600'
+                      : 'bg-gradient-to-t from-blue-500/50 to-purple-500/50'
                       }`}
                   >
                     {index === 4 && (
@@ -429,8 +438,8 @@ const DashboardOverview = () => {
                     key={period}
                     onClick={() => setSelectedPeriod(period)}
                     className={`px-3 py-1 rounded text-xs font-medium transition-colors ${selectedPeriod === period
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-academic-700 text-academic-300 hover:bg-academic-600'
+                      ? 'bg-purple-600 text-white'
+                      : 'bg-academic-700 text-academic-300 hover:bg-academic-600'
                       }`}
                   >
                     {period}
