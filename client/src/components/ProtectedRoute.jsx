@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 
-const ProtectedRoute = ({ children, requireAdmin = false }) => {
+const ProtectedRoute = ({ children, requireAdmin = false, requireVerified = true }) => {
     const { currentUser, isAdmin, loading, refreshUserData } = useAuth();
     const location = useLocation();
 
@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
         return <Navigate to="/" state={{ from: location }} replace />;
     }
 
-    if (!currentUser.emailVerified) {
+    if (requireVerified && !currentUser.emailVerified) {
         return (
             <div className="min-h-screen bg-academic-50 dark:bg-academic-900 flex items-center justify-center p-4">
                 <motion.div

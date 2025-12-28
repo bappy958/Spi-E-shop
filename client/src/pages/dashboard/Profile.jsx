@@ -12,7 +12,13 @@ const Profile = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
-    if (!currentUser) return null;
+    if (!currentUser) {
+        return (
+            <div className="p-6 text-center text-academic-500">
+                <p>Please log in to view your profile.</p>
+            </div>
+        );
+    }
 
     const handleSave = async () => {
         setLoading(true);

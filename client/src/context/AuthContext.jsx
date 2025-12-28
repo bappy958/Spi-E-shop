@@ -14,19 +14,34 @@ export const AuthProvider = ({ children }) => {
     const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
+        // Debug: Check if config is present
+        // console.log('Auth Context Init. Configured:', !!auth);
+
         if (!auth) {
+            console.error('Firebase Auth not initialized');
             setLoading(false);
             return;
         }
 
+        // Timeout fallback in case Firebase hangs
+        const timer = setTimeout(() => {
+            console.warn('Firebase auth listener timed out - forcing app load');
+            setLoading(false);
+        }, 5000);
+
         const unsubscribe = onAuthStateChanged(auth, (user) => {
+            clearTimeout(timer);
+            // console.log('Auth State Changed:', user ? 'User logged in' : 'No user');
             setCurrentUser(user);
             // Simple email-based admin check
             setIsAdmin(user?.email === 'bappy958@gmail.com');
             setLoading(false);
         });
 
-        return unsubscribe;
+        return () => {
+            clearTimeout(timer);
+            unsubscribe();
+        };
     }, []);
 
     const logout = () => {
@@ -57,7 +72,15 @@ export const AuthProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={value}>
-            {!loading && children}
+            <AuthContext.Provider value={value}>
+                {loading ? (
+                    <div className="min-h-screen bg-academic-900 flex items-center justify-center">
+                        <div className="w-12 h-12 border-4 border-gold-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                ) : (
+                    children
+                )}
+            </AuthContext.Provider>
         </AuthContext.Provider>
     );
 };

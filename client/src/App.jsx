@@ -135,7 +135,7 @@ function AppContent({
               <Route
                 path="/dashboard"
                 element={
-                  <ProtectedRoute>
+                  <ProtectedRoute requireVerified={false}>
                     <Dashboard />
                   </ProtectedRoute>
                 }
@@ -146,7 +146,7 @@ function AppContent({
                 <Route path="statistic" element={<DashboardOverview />} />
                 <Route path="orders" element={<Orders />} />
                 <Route path="orders" element={<Orders />} />
-                <Route path="profile" element={<Profile />} />
+                <Route path="profile" element={<ProfileWrapper />} />
 
                 {/* User Dashboard Routes */}
                 <Route path="my-cart" element={<MyCart />} />
@@ -252,5 +252,11 @@ function AppContent({
     </div>
   );
 }
+
+
+const ProfileWrapper = () => {
+  console.log('Rendering ProfileWrapper');
+  return <Profile />;
+};
 
 export default App;
