@@ -9,7 +9,6 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  Const [password AuthenticatorResponse, set Response ] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendStatus, setResendStatus] = useState('');
